@@ -3,43 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Meme & Quote Poster</title>
+  <title>Meme & Quotes Board</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <header>
-    <h1>🎬 Meme & Quote Poster</h1>
+    <h1>Meme & Movie Quotes</h1>
+    <nav>
+      <input type="text" id="searchInput" placeholder="Search...">
+    </nav>
   </header>
 
-  <nav>
-    <ul>
-      <li><a href="#">Home</a></li>
-      <li><a href="#upload">Upload</a></li>
-      <li><a href="#feed">Feed</a></li>
-    </ul>
-  </nav>
-
   <main>
-    <section id="upload">
-      <h2>Upload Your Meme or Quote</h2>
+    <section class="upload-section">
       <form id="postForm">
-        <input type="text" id="title" placeholder="Title..." required />
+        <input type="text" id="title" placeholder="Enter Title" required />
+        <input type="text" id="description" placeholder="What movie or series is it?" required />
         <input type="file" id="imageFile" accept="image/*" required />
-        <textarea id="description" rows="3" placeholder="What movie or series is this from?" required></textarea>
         <button type="submit">Post</button>
       </form>
+      <p id="statusMsg"></p>
     </section>
 
-    <section id="feed">
-      <h2>Recent Posts</h2>
-      <input type="text" id="searchInput" placeholder="Search by title or description..." />
-      <div id="posts" class="post-grid">Loading...</div>
+    <section id="posts" class="post-grid">
+      <!-- Posts will appear here -->
     </section>
   </main>
 
   <footer>
-    <p>&copy; 2025 MemeSite. Made by You.</p>
+    <p>© 2025 MemeBoard</p>
   </footer>
 
   <script type="module" src="app.js"></script>
