@@ -14,22 +14,19 @@
     <input type="text" id="searchBar" placeholder="Search by title or description...">
   </header>
 
-  <!-- Upload Form -->
-  <section id="uploadSection">
-    <h2>Post a Meme</h2>
-    <form id="uploadForm">
-      <input type="text" id="titleInput" placeholder="Title (e.g. Breaking Bad)" required>
-      <textarea id="descInput" placeholder="What's happening in the scene?" required></textarea>
-      <input type="file" id="imageInput" accept="image/*" required>
-      <button type="submit">Upload</button>
-    </form>
-    <p id="uploadStatus"></p>
-  </section>
+<form id="uploadForm">
+  <input type="text" id="title" placeholder="Enter title" required>
+  <textarea id="description" placeholder="Enter description" required></textarea>
+  <input type="file" id="image" accept="image/*" required>
+  <button type="submit">Upload</button>
+</form>
 
-  <!-- Feed Section -->
-  <main id="postContainer">
-    <!-- Cards will be injected here -->
-  </main>
+<div id="uploadStatus"></div>
+<input type="text" id="searchBar" placeholder="Search posts...">
+
+<div id="postContainer"></div>
+<div id="pagination"></div>
+
 
   <!-- Pagination Controls -->
   <div id="pagination">
