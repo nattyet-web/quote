@@ -113,6 +113,9 @@ footer {
     box-sizing: border-box;
     font-size: 0.9em;
 }
+header h1 {
+    text-align: center;
+}
 
 
 textarea#description {
