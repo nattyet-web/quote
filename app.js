@@ -1,8 +1,6 @@
-// Firebase SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-// 🔥 Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCznsX6vZAyCYD1EIBSaLpmTV31VC_PFYA",
   authDomain: "quote-3961b.firebaseapp.com",
@@ -16,84 +14,126 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 📤 ImageBB upload
-const IMGBB_API_KEY = "cc72ba01e3b6d759c4de57e14c3952d1";
-async function uploadImageToImgBB(file) {
-  const formData = new FormData();
-  formData.append("image", file);
-  const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-    method: "POST",
-    body: formData
-  });
-  const data = await res.json();
-  if (!data.success) throw new Error("Upload failed");
-  return data.data.url;
-}
+const uploadForm = document.getElementById("uploadForm");
+const postContainer = document.getElementById("postContainer");
+const uploadStatus = document.getElementById("uploadStatus");
+const searchBar = document.getElementById("searchBar");
 
-// 🧾 Add post to Firestore
-async function addPost(title, description, imageUrl) {
-  await addDoc(collection(db, "posts"), {
-    title,
-    description,
-    imageUrl,
-    createdAt: Date.now()
-  });
-}
+let currentPage = 1;
+const postsPerPage = 6;
+let allPosts = [];
 
-// 🖼️ Render all posts
-async function renderPosts(filter = "") {
-  const postsRef = collection(db, "posts");
-  const snapshot = await getDocs(postsRef);
-  const container = document.getElementById("posts");
-  container.innerHTML = "";
-
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    const title = data.title.toLowerCase();
-    const desc = data.description.toLowerCase();
-
-    if (filter && !title.includes(filter) && !desc.includes(filter)) return;
-
-    const post = document.createElement("div");
-    post.className = "post";
-    post.innerHTML = `
-      <h3>${data.title}</h3>
-      <p>${data.description}</p>
-      <img src="${data.imageUrl}" alt="${data.title}" />
-    `;
-    container.appendChild(post);
-  });
-}
-
-// 📥 Form submission
-document.getElementById("postForm").addEventListener("submit", async (e) => {
+uploadForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const title = document.getElementById("title").value.trim();
   const description = document.getElementById("description").value.trim();
-  const file = document.getElementById("imageFile").files[0];
-  const status = document.getElementById("statusMsg");
+  const imageFile = document.getElementById("image").files[0];
 
-  if (!title || !description || !file) return alert("Please fill in all fields.");
+  if (!title || !description || !imageFile) {
+    uploadStatus.textContent = "All fields are required.";
+    return;
+  }
 
-  status.textContent = "Uploading...";
+  uploadStatus.textContent = "Uploading image...";
+
+  const formData = new FormData();
+  formData.append("image", imageFile);
 
   try {
-    const imageUrl = await uploadImageToImgBB(file);
-    await addPost(title, description, imageUrl);
-    status.textContent = "✅ Posted!";
-    document.getElementById("postForm").reset();
-    renderPosts();
+    const imgbbAPIKey = "cc72ba01e3b6d759c4de57e14c3952d1"; // Your API key
+    const response = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbAPIKey}`, {
+      method: "POST",
+      body: formData,
+    });
+    const data = await response.json();
+    const imageUrl = data.data.url;
+
+    await addDoc(collection(db, "posts"), {
+      title,
+      description,
+      image: imageUrl,
+      created: Date.now()
+    });
+
+    uploadForm.reset();
+    uploadStatus.textContent = "Upload successful!";
+    fetchPosts(); // Reload posts
   } catch (err) {
     console.error(err);
-    status.textContent = "❌ Failed to upload.";
+    uploadStatus.textContent = "Upload failed. Try again.";
   }
 });
 
-// 🔍 Search
-document.getElementById("searchInput").addEventListener("input", (e) => {
-  const searchText = e.target.value.toLowerCase();
-  renderPosts(searchText);
+// Fetch and render posts
+async function fetchPosts() {
+  const q = query(collection(db, "posts"), orderBy("created", "desc"));
+  const querySnapshot = await getDocs(q);
+
+  allPosts = [];
+  querySnapshot.forEach((doc) => {
+    allPosts.push(doc.data());
+  });
+
+  renderPosts();
+}
+
+function renderPosts() {
+  postContainer.innerHTML = "";
+
+  const filteredPosts = allPosts.filter(post =>
+    post.title.toLowerCase().includes(searchBar.value.toLowerCase())
+  );
+
+  const start = (currentPage - 1) * postsPerPage;
+  const end = start + postsPerPage;
+  const paginatedPosts = filteredPosts.slice(start, end);
+
+  if (paginatedPosts.length === 0) {
+    postContainer.innerHTML = "<p>No posts found.</p>";
+    return;
+  }
+
+  paginatedPosts.forEach(post => {
+    const card = document.createElement("div");
+    card.className = "post-card";
+    card.innerHTML = `
+      <img src="${post.image}" alt="${post.title}">
+      <div class="post-content">
+        <h3>${post.title}</h3>
+        <p>${post.description}</p>
+      </div>
+    `;
+    postContainer.appendChild(card);
+  });
+
+  renderPagination(filteredPosts.length);
+}
+
+function renderPagination(totalPosts) {
+  const pagination = document.getElementById("pagination");
+  pagination.innerHTML = "";
+
+  const totalPages = Math.ceil(totalPosts / postsPerPage);
+
+  if (totalPages <= 1) return;
+
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    if (i === currentPage) btn.style.background = "#555";
+    btn.addEventListener("click", () => {
+      currentPage = i;
+      renderPosts();
+    });
+    pagination.appendChild(btn);
+  }
+}
+
+// Search live filtering
+searchBar.addEventListener("input", () => {
+  currentPage = 1;
+  renderPosts();
 });
 
-// 🧩 Initial load
-renderPosts();
+fetchPosts();
