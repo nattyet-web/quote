@@ -24,15 +24,17 @@
     <section id="upload">
       <h2>Upload Your Meme or Quote</h2>
       <form id="postForm">
-        <input type="text" id="title" placeholder="Enter title..." required />
+        <input type="text" id="title" placeholder="Title..." required />
         <input type="file" id="imageFile" accept="image/*" required />
+        <textarea id="description" rows="3" placeholder="What movie or series is this from?" required></textarea>
         <button type="submit">Post</button>
       </form>
     </section>
 
     <section id="feed">
       <h2>Recent Posts</h2>
-      <div id="posts">Loading...</div>
+      <input type="text" id="searchInput" placeholder="Search by title or description..." />
+      <div id="posts" class="post-grid">Loading...</div>
     </section>
   </main>
 
