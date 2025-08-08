@@ -5,64 +5,61 @@
 </head>
 <body>
   <h1>Admin Panel</h1>
-  <button id="logoutBtn">Logout</button>
-  <div id="adminContent">
-    <!-- You can list posts here with a delete button -->
-  </div>
+  <button id="logout">Logout</button>
+  <div id="adminPosts"></div>
 
+  <!-- Your script should be LAST inside body -->
   <script type="module">
-  import { auth } from './firebase.js';
-  import {
-    getFirestore,
-    collection,
-    getDocs,
-    deleteDoc,
-    doc
-  } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js';
-  import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js';
+    import { auth } from './firebase.js';
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      deleteDoc,
+      doc
+    } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js';
+    import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js';
 
-  const db = getFirestore();
+    const db = getFirestore();
+    const container = document.getElementById("adminPosts");
+    const logoutBtn = document.getElementById("logout");
 
-  const container = document.getElementById("adminPosts");
-  const logoutBtn = document.getElementById("logout");
+    // Ensure the user is authenticated
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const querySnapshot = await getDocs(collection(db, "posts"));
+        querySnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
 
-  // Show posts only if admin is logged in
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const querySnapshot = await getDocs(collection(db, "posts"));
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
+          const title = data.title || 'No Title';
+          const description = data.description || '';
+          const imageUrl = data.image || '';
 
-        const title = data.title || 'No Title';
-        const description = data.description || '';
-        const imageUrl = data.image || '';
+          const postDiv = document.createElement('div');
+          postDiv.style.marginBottom = "20px";
 
-        const postDiv = document.createElement('div');
-        postDiv.style.marginBottom = "20px";
+          postDiv.innerHTML = `
+            <h3>${title}</h3>
+            <img src="${imageUrl}" alt="${title}" width="200" />
+            <p>${description}</p>
+            <button onclick="deletePost('${docSnap.id}')">Delete</button>
+          `;
 
-        postDiv.innerHTML = `
-          <h3>${title}</h3>
-          <img src="${imageUrl}" alt="${title}" width="200" />
-          <p>${description}</p>
-          <button onclick="deletePost('${docSnap.id}')">Delete</button>
-        `;
+          container.appendChild(postDiv);
+        });
+      } else {
+        window.location.href = "login.html";
+      }
+    });
 
-        container.appendChild(postDiv);
-      });
-    } else {
-      window.location.href = "login.html";
-    }
-  });
+    window.deletePost = async function(id) {
+      await deleteDoc(doc(db, "posts", id));
+      location.reload();
+    };
 
-  window.deletePost = async function(id) {
-    await deleteDoc(doc(db, "posts", id));
-    location.reload();
-  };
-
-  logoutBtn.addEventListener("click", () => {
-    signOut(auth);
-  });
-</script>
-
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth);
+    });
+  </script>
 </body>
 </html>
