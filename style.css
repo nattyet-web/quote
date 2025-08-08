@@ -1,86 +1,151 @@
-body {
+/* Basic Reset */
+* {
+  box-sizing: border-box;
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #111;
-  color: #f1f1f1;
+  padding: 0;
 }
 
+body {
+  font-family: Arial, sans-serif;
+  background-color: #121212;
+  color: #ffffff;
+  line-height: 1.6;
+  padding: 0 1rem;
+}
+
+/* Header */
 header {
-  background-color: #222;
-  padding: 1rem;
   text-align: center;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid #333;
 }
 
 header h1 {
-  margin: 0;
-  font-size: 2rem;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
 }
 
-nav input {
-  width: 80%;
-  max-width: 400px;
+#searchBar {
   padding: 0.5rem;
-  margin-top: 1rem;
-  border-radius: 5px;
+  width: 100%;
+  max-width: 400px;
   border: none;
+  border-radius: 8px;
 }
 
-.upload-section {
+/* Upload Section */
+#uploadSection {
+  background: #1e1e1e;
   padding: 1rem;
-  text-align: center;
+  border-radius: 12px;
+  margin: 2rem auto;
+  max-width: 600px;
 }
 
-.upload-section form {
+#uploadForm {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
+  gap: 0.8rem;
 }
 
-.upload-section input,
-.upload-section button {
-  padding: 0.5rem;
-  width: 90%;
-  max-width: 400px;
-  border-radius: 5px;
+#uploadForm input[type="text"],
+#uploadForm textarea,
+#uploadForm input[type="file"] {
+  padding: 0.6rem;
+  border-radius: 8px;
   border: none;
 }
 
-.upload-section button {
-  background-color: #444;
-  color: white;
+#uploadForm textarea {
+  resize: vertical;
+  height: 100px;
+}
+
+#uploadForm button {
+  padding: 0.6rem;
+  background-color: #2979ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background 0.3s;
 }
 
-#statusMsg {
+#uploadForm button:hover {
+  background-color: #1565c0;
+}
+
+#uploadStatus {
   margin-top: 0.5rem;
-  color: lightgreen;
 }
 
-.post-grid {
+/* Feed/Post Cards */
+#postContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
 }
 
-.post {
-  background-color: #222;
-  border-radius: 10px;
+.post-card {
+  background-color: #1e1e1e;
+  border-radius: 12px;
   overflow: hidden;
-  padding: 1rem;
-  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease;
 }
 
-.post img {
+.post-card:hover {
+  transform: scale(1.02);
+}
+
+.post-card img {
   width: 100%;
-  height: auto;
-  border-radius: 5px;
-  margin-top: 0.5rem;
+  display: block;
 }
 
+.post-content {
+  padding: 0.8rem;
+}
+
+.post-content h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.4rem;
+}
+
+.post-content p {
+  font-size: 0.95rem;
+  color: #ccc;
+}
+
+/* Pagination */
+#pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+#pagination button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #333;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#pagination button:hover {
+  background: #555;
+}
+
+/* Footer */
 footer {
-  background-color: #222;
-  padding: 1rem;
   text-align: center;
+  padding: 1rem;
+  border-top: 1px solid #333;
+  font-size: 0.9rem;
+  color: #aaa;
 }
