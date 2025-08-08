@@ -3,36 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Meme & Quotes Board</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Movie Meme Feed</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+  <!-- Header -->
   <header>
-    <h1>Meme & Movie Quotes</h1>
-    <nav>
-      <input type="text" id="searchInput" placeholder="Search...">
-    </nav>
+    <h1>🎬 Movie & Series Memes</h1>
+    <input type="text" id="searchBar" placeholder="Search by title or description...">
   </header>
 
-  <main>
-    <section class="upload-section">
-      <form id="postForm">
-        <input type="text" id="title" placeholder="Enter Title" required />
-        <input type="text" id="description" placeholder="What movie or series is it?" required />
-        <input type="file" id="imageFile" accept="image/*" required />
-        <button type="submit">Post</button>
-      </form>
-      <p id="statusMsg"></p>
-    </section>
+  <!-- Upload Form -->
+  <section id="uploadSection">
+    <h2>Post a Meme</h2>
+    <form id="uploadForm">
+      <input type="text" id="titleInput" placeholder="Title (e.g. Breaking Bad)" required>
+      <textarea id="descInput" placeholder="What's happening in the scene?" required></textarea>
+      <input type="file" id="imageInput" accept="image/*" required>
+      <button type="submit">Upload</button>
+    </form>
+    <p id="uploadStatus"></p>
+  </section>
 
-    <section id="posts" class="post-grid">
-      <!-- Posts will appear here -->
-    </section>
+  <!-- Feed Section -->
+  <main id="postContainer">
+    <!-- Cards will be injected here -->
   </main>
 
+  <!-- Pagination Controls -->
+  <div id="pagination">
+    <button id="prevPage">Previous</button>
+    <span id="pageIndicator">Page 1</span>
+    <button id="nextPage">Next</button>
+  </div>
+
+  <!-- Footer -->
   <footer>
-    <p>© 2025 MemeBoard</p>
+    <p>Built with ❤️ using Firebase & ImageBB</p>
   </footer>
 
   <script type="module" src="app.js"></script>
