@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+</head>
+<body>
+  <h1>Admin Panel</h1>
+  <button id="logoutBtn">Logout</button>
+  <div id="adminContent">
+    <!-- You can list posts here with a delete button -->
+  </div>
+
+  <script type="module">
+    import { auth, db } from './firebase.js';
+    import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js';
+    import { collection, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js';
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    const adminContent = document.getElementById('adminContent');
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+      } else {
+        const snapshot = await getDocs(collection(db, 'posts'));
+        snapshot.forEach(docSnap => {
+          const data = docSnap.data();
+          const div = document.createElement('div');
+          div.innerHTML = `
+            <p>${data.title}</p>
+            <img src="${data.image}" width="150">
+            <button data-id="${docSnap.id}">Delete</button>
+          `;
+          div.querySelector('button').addEventListener('click', async () => {
+            await deleteDoc(doc(db, 'posts', docSnap.id));
+            div.remove();
+          });
+          adminContent.appendChild(div);
+        });
+      }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      await signOut(auth);
+      window.location.href = 'login.html';
+    });
+  </script>
+</body>
+</html>
