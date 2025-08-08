@@ -1,0 +1,95 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #121212;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+header {
+  background: #1f1f1f;
+  padding: 20px;
+  text-align: center;
+}
+
+nav {
+  background: #272727;
+  padding: 10px 0;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+}
+
+main {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+input, button {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+}
+
+input[type="text"] {
+  background: #1e1e1e;
+  color: #fff;
+}
+
+input[type="file"] {
+  background: #1e1e1e;
+  color: #ccc;
+}
+
+button {
+  background: #00aaff;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #008ecc;
+}
+
+#posts .post {
+  background: #1e1e1e;
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.post img {
+  max-width: 100%;
+  border-radius: 5px;
+}
+
+footer {
+  background: #1f1f1f;
+  text-align: center;
+  padding: 15px;
+  margin-top: 40px;
+}
