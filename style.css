@@ -1,4 +1,4 @@
-/* Basic Reset */
+/* Reset and Base */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -9,15 +9,13 @@ body {
   font-family: Arial, sans-serif;
   background-color: #121212;
   color: #ffffff;
-  line-height: 1.6;
   padding: 0 1rem;
 }
 
 /* Header */
 header {
   text-align: center;
-  padding: 1.5rem 0;
-  border-bottom: 1px solid #333;
+  padding: 2rem 0 1rem;
 }
 
 header h1 {
@@ -26,31 +24,30 @@ header h1 {
 }
 
 #searchBar {
-  padding: 0.5rem;
+  padding: 0.6rem;
   width: 100%;
   max-width: 400px;
-  border: none;
+  margin: 0 auto;
+  display: block;
   border-radius: 8px;
+  border: none;
+  background-color: #1e1e1e;
+  color: #fff;
 }
 
 /* Upload Section */
 #uploadSection {
-  background: #1e1e1e;
+  margin: 2rem auto;
+  max-width: 500px;
+  background-color: #1e1e1e;
   padding: 1.5rem;
   border-radius: 12px;
-  margin: 2rem auto;
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 #uploadForm {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.8rem;
-  width: 100%;
+  gap: 1rem;
 }
 
 #uploadForm input[type="text"],
@@ -70,7 +67,6 @@ header h1 {
 }
 
 #uploadForm button {
-  width: 100%;
   padding: 0.6rem;
   background-color: #2979ff;
   color: #fff;
@@ -88,20 +84,23 @@ header h1 {
 #uploadStatus {
   margin-top: 0.5rem;
   color: #90caf9;
+  text-align: center;
 }
 
-/* Feed/Post Cards */
+/* Post Container */
 #postContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.2rem;
-  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 2rem 0;
 }
 
 .post-card {
   background-color: #1e1e1e;
   border-radius: 12px;
   overflow: hidden;
+  width: 450px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.3);
   transition: transform 0.3s ease;
 }
@@ -113,10 +112,11 @@ header h1 {
 .post-card img {
   width: 100%;
   display: block;
+  object-fit: cover;
 }
 
 .post-content {
-  padding: 0.8rem;
+  padding: 1rem;
 }
 
 .post-content h3 {
@@ -139,7 +139,7 @@ header h1 {
 }
 
 #pagination button {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.2rem;
   border: none;
   background: #333;
   color: #fff;
@@ -155,8 +155,8 @@ header h1 {
 /* Footer */
 footer {
   text-align: center;
-  padding: 1rem;
-  border-top: 1px solid #333;
+  padding: 1.5rem 0;
   font-size: 0.9rem;
   color: #aaa;
+  border-top: 1px solid #333;
 }
