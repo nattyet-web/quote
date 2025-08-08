@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meme & Quote Poster</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>🎬 Meme & Quote Poster</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#upload">Upload</a></li>
+      <li><a href="#feed">Feed</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section id="upload">
+      <h2>Upload Your Meme or Quote</h2>
+      <form id="postForm">
+        <input type="text" id="title" placeholder="Enter title..." required />
+        <input type="file" id="imageFile" accept="image/*" required />
+        <button type="submit">Post</button>
+      </form>
+    </section>
+
+    <section id="feed">
+      <h2>Recent Posts</h2>
+      <div id="posts">Loading...</div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 MemeSite. Made by You.</p>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
