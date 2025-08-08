@@ -36,7 +36,7 @@ nav a {
 }
 
 main {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 30px auto;
   padding: 0 20px;
 }
@@ -48,14 +48,18 @@ form {
   margin-top: 10px;
 }
 
-input, button {
+input[type="text"],
+input[type="file"],
+textarea,
+button {
   padding: 10px;
   font-size: 16px;
   border: none;
   border-radius: 5px;
 }
 
-input[type="text"] {
+input[type="text"],
+textarea {
   background: #1e1e1e;
   color: #fff;
 }
@@ -75,11 +79,37 @@ button:hover {
   background: #008ecc;
 }
 
-#posts .post {
+#searchInput {
+  width: 100%;
+  margin: 20px 0;
+  padding: 10px;
   background: #1e1e1e;
-  margin-top: 20px;
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
+  color: #fff;
+}
+
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.post {
+  background: #1e1e1e;
   padding: 10px;
   border-radius: 5px;
+}
+
+.post h3 {
+  margin-bottom: 5px;
+}
+
+.post p {
+  font-size: 14px;
+  color: #aaa;
+  margin-bottom: 10px;
 }
 
 .post img {
@@ -92,4 +122,16 @@ footer {
   text-align: center;
   padding: 15px;
   margin-top: 40px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  nav ul {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .post-grid {
+    grid-template-columns: 1fr;
+  }
 }
