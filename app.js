@@ -1,109 +1,99 @@
-// Firebase modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  query,
-  orderBy
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+// Firebase SDK
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js";
-
-// 🔧 REPLACE WITH YOUR FIREBASE CONFIG
+// 🔥 Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCznsX6vZAyCYD1EIBSaLpmTV31VC_PFYA",
   authDomain: "quote-3961b.firebaseapp.com",
   projectId: "quote-3961b",
   storageBucket: "quote-3961b.firebasestorage.app",
   messagingSenderId: "567051664623",
-  appId: "1:567051664623:web:017043279ce46910ee2f1a"
+  appId: "1:567051664623:web:017043279ce46910ee2f1a",
+  measurementId: "G-44H971VNYF"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const storage = getStorage(app);
 
-// DOM elements
-const form = document.getElementById("postForm");
-const postsContainer = document.getElementById("posts");
-const searchInput = document.getElementById("searchInput");
+// 📤 ImageBB upload
+const IMGBB_API_KEY = "cc72ba01e3b6d759c4de57e14c3952d1";
+async function uploadImageToImgBB(file) {
+  const formData = new FormData();
+  formData.append("image", file);
+  const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+    method: "POST",
+    body: formData
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error("Upload failed");
+  return data.data.url;
+}
 
-let allPosts = [];
+// 🧾 Add post to Firestore
+async function addPost(title, description, imageUrl) {
+  await addDoc(collection(db, "posts"), {
+    title,
+    description,
+    imageUrl,
+    createdAt: Date.now()
+  });
+}
 
-form.addEventListener("submit", async (e) => {
+// 🖼️ Render all posts
+async function renderPosts(filter = "") {
+  const postsRef = collection(db, "posts");
+  const snapshot = await getDocs(postsRef);
+  const container = document.getElementById("posts");
+  container.innerHTML = "";
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const title = data.title.toLowerCase();
+    const desc = data.description.toLowerCase();
+
+    if (filter && !title.includes(filter) && !desc.includes(filter)) return;
+
+    const post = document.createElement("div");
+    post.className = "post";
+    post.innerHTML = `
+      <h3>${data.title}</h3>
+      <p>${data.description}</p>
+      <img src="${data.imageUrl}" alt="${data.title}" />
+    `;
+    container.appendChild(post);
+  });
+}
+
+// 📥 Form submission
+document.getElementById("postForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const title = document.getElementById("title").value.trim();
   const description = document.getElementById("description").value.trim();
   const file = document.getElementById("imageFile").files[0];
+  const status = document.getElementById("statusMsg");
 
-  if (!file) return alert("Please choose an image.");
+  if (!title || !description || !file) return alert("Please fill in all fields.");
+
+  status.textContent = "Uploading...";
 
   try {
-    // Upload image to Firebase Storage
-    const fileRef = ref(storage, `uploads/${Date.now()}_${file.name}`);
-    const snapshot = await uploadBytes(fileRef, file);
-    const imageUrl = await getDownloadURL(snapshot.ref);
-
-    // Save data to Firestore
-    await addDoc(collection(db, "posts"), {
-      title,
-      description,
-      imageUrl,
-      createdAt: new Date()
-    });
-
-    form.reset();
-    loadPosts(); // refresh feed
+    const imageUrl = await uploadImageToImgBB(file);
+    await addPost(title, description, imageUrl);
+    status.textContent = "✅ Posted!";
+    document.getElementById("postForm").reset();
+    renderPosts();
   } catch (err) {
-    console.error("Error uploading:", err);
-    alert("Upload failed. Try again.");
+    console.error(err);
+    status.textContent = "❌ Failed to upload.";
   }
 });
 
-// Load & display posts
-async function loadPosts() {
-  postsContainer.innerHTML = "Loading...";
-  const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-  const snapshot = await getDocs(q);
-
-  allPosts = snapshot.docs.map(doc => doc.data());
-  displayPosts(allPosts);
-}
-
-// Render posts in grid
-function displayPosts(posts) {
-  if (posts.length === 0) {
-    postsContainer.innerHTML = "<p>No posts found.</p>";
-    return;
-  }
-
-  postsContainer.innerHTML = posts.map(post => `
-    <div class="post">
-      <h3>${post.title}</h3>
-      <p>${post.description}</p>
-      <img src="${post.imageUrl}" alt="${post.title}" />
-    </div>
-  `).join('');
-}
-
-// Filter with search
-searchInput.addEventListener("input", () => {
-  const keyword = searchInput.value.toLowerCase();
-  const filtered = allPosts.filter(post =>
-    post.title.toLowerCase().includes(keyword) ||
-    post.description.toLowerCase().includes(keyword)
-  );
-  displayPosts(filtered);
+// 🔍 Search
+document.getElementById("searchInput").addEventListener("input", (e) => {
+  const searchText = e.target.value.toLowerCase();
+  renderPosts(searchText);
 });
 
-// Initial load
-loadPosts();
+// 🧩 Initial load
+renderPosts();
